@@ -5,7 +5,7 @@
         DataTable(
           v-if="items.length"
           :headers="headers"
-          :items="items"
+          :items="formattedItems"
         )
         v-progress-circular(
           v-else
@@ -28,13 +28,22 @@ export default {
       sales,
       items: [],
       headers: [
-        { text: 'Name', value: 'user', align: 'start' },
-        { text: 'Email', value: 'email' },
-        { text: 'Gender', value: 'gender' },
-        { text: 'Year', value: 'year' },
-        { text: 'Sales', value: 'sales' },
-        { text: 'Country', value: 'country' },
+        { text: 'Title', value: 'user.title', align: 'start', sortable: false },
+        { text: 'Full Name', value: 'userFullName', align: 'start', sortable: false, },
+        { text: 'Email', value: 'email', align: 'start', sortable: false },
+        { text: 'Gender', value: 'gender', align: 'center', sortable: false },
+        { text: 'Year', value: 'year', align: 'center', sortable: false },
+        { text: 'Sales', value: 'sales', align: 'center', sortable: false },
+        { text: 'Country', value: 'country', align: 'center', sortable: false, },
       ],
+    }
+  },
+  computed: {
+    formattedItems() {
+      return this.items.map(item => {
+        item.userFullName = `${item.user.first_name} ${item.user.last_name}`
+        return item
+      })
     }
   },
   async created() {
