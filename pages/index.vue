@@ -49,12 +49,10 @@ export default {
   },
   methods: {
     async fetchDataByOptions(payload) {
-      console.log(payload)
-      this.loading = true
       this.items = await this.fetchData(payload.page -1, payload.itemsPerPage, payload.search)
-      this.loading = false
     },
     async fetchData(page, size, search = '') {
+      this.loading = true
       const start = page * size
       await this.delay(1000)
       let itemsToSlice = await sales.results
@@ -68,13 +66,11 @@ export default {
         )
       }
       this.totalItems = itemsToSlice.length
+      this.loading = false
       return itemsToSlice.slice(start, start + size)
     },
     delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms))
-    },
-    filterBySearchStr(item) {
-
     }
   }
 }

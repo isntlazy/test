@@ -1,40 +1,20 @@
-<template lang="html">
-  <v-card>
-    <v-card-title>
-      <v-select
-        class="column-filter"
-        v-model="selectedHeaders"
-        :items="headers"
-        label="Show Columns"
-        multiple
-        item-text="text"
-        item-value="value"
-      >
-      </v-select>
-      <v-spacer></v-spacer>
-      <v-text-field
-        class="search-field"
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search Data"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
-      :loading="loading"
-      :options.sync="options"
-      :server-items-length="totalItemsCount"
-      class="elevation-1 mt-5"
-      :headers="filteredHeaders"
-      :items="items"
-      item-key="email"
-      :footer-props="{
-        itemsPerPageOptions: [25, 50, 100, 200]
-      }"
-      dense="dense">
-    </v-data-table>
-  </v-card>
+<template lang="pug">
+  v-card
+    v-card-title
+      v-select.column-filter(v-model='selectedHeaders', :items='headers', label='Show Columns', multiple='', item-text='text', item-value='value')
+      v-spacer
+      v-text-field.search-field(v-model='search', append-icon='mdi-magnify', label='Search Data', single-line='', hide-details='')
+    v-data-table.elevation-1.mt-5(
+      :loading='loading'
+      :options.sync='options'
+      :server-items-length='totalItemsCount'
+      :headers='filteredHeaders'
+      :items='items'
+      item-key='email'
+      :footer-props='{\
+        itemsPerPageOptions: [25, 50, 100, 200]\
+      }',
+      dense='dense')
 </template>
 
 <script>
@@ -79,14 +59,7 @@ export default {
     width: 300px
   .search-field
     margin-top: -18px
-</style>
-
-<style lang="scss">
-table,
-th,
-td {
-  border: 1px solid #ccc;
-  border-collapse: collapse;
-}
-
+  table, th, td
+    border: 1px solid #ccc
+    border-collapse: collapse
 </style>
