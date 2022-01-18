@@ -6,7 +6,7 @@
           :headers="headers"
           :items="formattedItems"
           :loading="loading"
-          :totalItemsCount="sales.results.length"
+          :totalItemsCount="totalItems"
           @dataOptionsChange="fetchDataByOptions"
         )
 </template>
@@ -33,6 +33,7 @@ export default {
         { text: 'Sales', value: 'sales', align: 'center', sortable: false },
         { text: 'Country', value: 'country', align: 'center', sortable: false, width: '20%' },
       ],
+      totalItems: 0
     }
   },
   computed: {
@@ -66,6 +67,7 @@ export default {
             || item.sales.toLowerCase().includes(lowerCasedSearch) || item.country.toLowerCase().includes(lowerCasedSearch)
         )
       }
+      this.totalItems = itemsToSlice.length
       return itemsToSlice.slice(start, start + size)
     },
     delay(ms) {
