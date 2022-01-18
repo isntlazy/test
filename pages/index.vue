@@ -58,12 +58,21 @@ export default {
       await this.delay(1000)
       let itemsToSlice = await sales.results
       if (search) {
-        itemsToSlice = itemsToSlice.filter((item) => item.email.toLowerCase().includes(search.toLowerCase()))
+        const lowerCasedSearch = search.toLowerCase()
+        itemsToSlice = itemsToSlice.filter(
+          (item) => item.email.toLowerCase().includes(lowerCasedSearch) || item.user.first_name.toLowerCase().includes(lowerCasedSearch)
+            || item.user.last_name.toLowerCase().includes(lowerCasedSearch) || item.user.title.toLowerCase().includes(lowerCasedSearch)
+            || item.gender.toLowerCase().includes(lowerCasedSearch) || String (item.year).includes(lowerCasedSearch)
+            || item.sales.toLowerCase().includes(lowerCasedSearch) || item.country.toLowerCase().includes(lowerCasedSearch)
+        )
       }
       return itemsToSlice.slice(start, start + size)
     },
     delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms))
+    },
+    filterBySearchStr(item) {
+
     }
   }
 }
