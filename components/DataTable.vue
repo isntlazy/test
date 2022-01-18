@@ -21,27 +21,44 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <transition name="fade">
-      <v-data-table
-        class="elevation-1 mt-5"
-        :search="search"
-        :headers="filteredHeaders"
-        :items="items"
-        item-key="email"
-        dense="dense">
-      </v-data-table>
-    </transition>
+    <v-data-table
+      :loading="loading"
+      :options.sync="options"
+      :server-items-length="totalItemsCount"
+      class="elevation-1 mt-5"
+      :headers="filteredHeaders"
+      :items="items"
+      item-key="email"
+      :footer-props="{
+        itemsPerPageOptions: [25, 50, 100, 200]
+      }"
+      dense="dense">
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ['headers', 'items'],
+  props: ['headers', 'items', 'totalItemsCount', 'loading'],
   data() {
     return {
       selectedHeaders: [],
       search: '',
-      showTable: true
+      options: {}
+    }
+  },
+  watch: {
+    options: {
+      handler (data, oldData) {
+        if (oldData.page) {
+          const { itemsPerPage, page } = data
+          this.$emit('dataOptionsChange', { page, itemsPerPage, search: this.search })
+        }
+      },
+      deep: true,
+    },
+    search(searchStr) {
+      this.$emit('dataOptionsChange', { page: this.options.page, itemsPerPage: this.options.itemsPerPage, search: searchStr })
     }
   },
   computed: {
@@ -62,4 +79,14 @@ export default {
     width: 300px
   .search-field
     margin-top: -18px
+</style>
+
+<style lang="scss">
+table,
+th,
+td {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+
 </style>

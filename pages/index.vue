@@ -3,16 +3,12 @@
     v-row
       v-col(cols)
         DataTable(
-          v-if="items.length"
           :headers="headers"
           :items="formattedItems"
+          :loading="loading"
+          :totalItemsCount="sales.results.length"
+          @dataOptionsChange="fetchDataByOptions"
         )
-        v-progress-circular(
-          v-else
-          width="2"
-          color="rs__primary"
-          indeterminate
-        ).mx-auto
 </template>
 
 <script>
@@ -25,16 +21,17 @@ export default {
   },
   data() {
     return {
+      loading: false,
       sales,
       items: [],
       headers: [
-        { text: 'Title', value: 'user.title', align: 'start', sortable: false },
-        { text: 'Full Name', value: 'userFullName', align: 'start', sortable: false, },
-        { text: 'Email', value: 'email', align: 'start', sortable: false },
+        { text: 'Title', value: 'user.title', align: 'start', sortable: false, width: '50px' },
+        { text: 'Full Name', value: 'userFullName', align: 'start', sortable: false, width: '20%' },
+        { text: 'Email', value: 'email', align: 'start', sortable: false, width: '25%' },
         { text: 'Gender', value: 'gender', align: 'center', sortable: false },
         { text: 'Year', value: 'year', align: 'center', sortable: false },
         { text: 'Sales', value: 'sales', align: 'center', sortable: false },
-        { text: 'Country', value: 'country', align: 'center', sortable: false, },
+        { text: 'Country', value: 'country', align: 'center', sortable: false, width: '20%' },
       ],
     }
   },
@@ -47,13 +44,23 @@ export default {
     }
   },
   async created() {
-    this.items = await this.fetchData(0, 50)
+    this.items = await this.fetchData(0, 25)
   },
   methods: {
-    async fetchData(page, size) {
+    async fetchDataByOptions(payload) {
+      console.log(payload)
+      this.loading = true
+      this.items = await this.fetchData(payload.page -1, payload.itemsPerPage, payload.search)
+      this.loading = false
+    },
+    async fetchData(page, size, search = '') {
       const start = page * size
-      await this.delay(3000)
-      return await sales.results.slice(start, start + size)
+      await this.delay(1000)
+      let itemsToSlice = await sales.results
+      if (search) {
+        itemsToSlice = itemsToSlice.filter((item) => item.email.toLowerCase().includes(search.toLowerCase()))
+      }
+      return itemsToSlice.slice(start, start + size)
     },
     delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms))
